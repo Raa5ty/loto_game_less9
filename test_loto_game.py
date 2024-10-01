@@ -34,6 +34,21 @@ class TestCard(unittest.TestCase):
         
         self.assertTrue(self.card.is_complete())
 
+    def test_len(self):
+        card = Card()
+        self.assertEqual(len(card), 15)
+
+    def test_iter(self):
+        card = Card()
+        numbers = list(card)
+        self.assertEqual(len(numbers), 15)
+        self.assertTrue(all(isinstance(num, int) for num in numbers))
+
+    def test_repr(self):
+        card = Card()
+        self.assertTrue(repr(card).startswith("Card("))
+        self.assertTrue(repr(card).endswith(")"))
+
 class TestBarrel(unittest.TestCase):
     def test_barrel_initialization(self):
         barrel = Barrel(42)
@@ -51,11 +66,23 @@ class TestBarrel(unittest.TestCase):
         Barrel(1)
         Barrel(90)
 
+    def test_repr(self):
+        barrel = Barrel(42)
+        self.assertEqual(repr(barrel), "Barrel(42)")
+
 class TestPlayer(unittest.TestCase):
     def test_player_initialization(self):
         player = Player("Test Player", 2)
         self.assertEqual(player.name, "Test Player")
         self.assertEqual(len(player.cards), 2)
+
+    def test_repr(self):
+        player = Player("Test", 2)
+        repr_str = repr(player)
+        self.assertTrue(repr_str.startswith("Player("))
+        self.assertTrue("name='Test'" in repr_str)
+        self.assertTrue("cards=" in repr_str)
+        self.assertTrue(repr_str.endswith(")"))
 
 class TestHumanPlayer(unittest.TestCase):
     def setUp(self):
@@ -104,6 +131,15 @@ class TestGame(unittest.TestCase):
                     if isinstance(row[i], int):
                         row[i] = 'X'
         self.assertTrue(game.check_winner())
+
+    def test_repr(self):
+        game = Game()
+        repr_str = repr(game)
+        self.assertTrue(repr_str.startswith("Game("))
+        self.assertTrue("players=" in repr_str)
+        self.assertTrue("barrels=" in repr_str)
+        self.assertTrue("time_limit=" in repr_str)
+        self.assertTrue(repr_str.endswith(")"))
 
 if __name__ == '__main__':
     unittest.main()
