@@ -55,6 +55,23 @@ class Card:
 
     def is_complete(self):
         return all(row.count('X') == self.numbers_per_row for row in self.card)
+    
+    def __eq__(self, other):
+        if isinstance(other, Card):
+            return self.card == other.card
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+    
+    def __len__(self):
+        return sum(1 for row in self.card for num in row if isinstance(num, int))
+
+    def __iter__(self):
+        return iter(num for row in self.card for num in row if isinstance(num, int))
+
+    def __repr__(self):
+        return f"Card({self.card})"
 
     def __str__(self):
         card_str = "--------------------------\n"
@@ -71,12 +88,37 @@ class Barrel:
 
     def __str__(self):
         return str(self.number)
+    
+    def __eq__(self, other):
+        if isinstance(other, Barrel):
+            return self.number == other.number
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+    
+    def __repr__(self):
+        return f"Barrel({self.number})"
 
 # Создадим класс для игрока
 class Player:
     def __init__(self, name, num_cards):
         self.name = name
         self.cards = [Card() for _ in range(num_cards)]
+
+    def __str__(self):
+        return f"Игрок {self.name} с {len(self.cards)} карточками"
+    
+    def __eq__(self, other):
+        if isinstance(other, Player):
+            return self.name == other.name and self.cards == other.cards
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+    
+    def __repr__(self):
+        return f"Player(name='{self.name}', cards={self.cards})"
 
 class HumanPlayer(Player):
     def make_move(self, barrel, time_limit):
@@ -129,6 +171,22 @@ class Game:
         self.barrels = list(range(1, 91))
         random.shuffle(self.barrels)
         self.time_limit = self.set_time_limit()
+
+    def __str__(self):
+        return f"Игра лото: {len(self.players)} игроков, {len(self.barrels)} бочонков осталось, лимит времени: {self.time_limit} сек."
+    
+    def __eq__(self, other):
+        if isinstance(other, Game):
+            return (self.players == other.players and
+                    self.barrels == other.barrels and
+                    self.time_limit == other.time_limit)
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+    
+    def __repr__(self):
+        return f"Game(players={self.players}, barrels={self.barrels}, time_limit={self.time_limit})"
 
     def setup_players(self):
         players = []
